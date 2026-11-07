@@ -31,6 +31,7 @@ class UserManagementTest extends TestCase
             ->fillForm([
                 'name' => 'Pengguna Baru',
                 'email' => 'baru@example.com',
+                'role' => 'admin',
                 'password' => 'secure-password',
             ])
             ->call('create')
@@ -39,11 +40,29 @@ class UserManagementTest extends TestCase
         $this->assertDatabaseHas(User::class, [
             'name' => 'Pengguna Baru',
             'email' => 'baru@example.com',
+            'role' => 'admin',
         ]);
 
         $user = User::query()->where('email', 'baru@example.com')->firstOrFail();
 
         $this->assertTrue(Hash::check('secure-password', $user->password));
+    }
+
+    public function test_new_user_defaults_to_the_user_role(): void
+    {
+        Livewire::test(CreateUser::class)
+            ->fillForm([
+                'name' => 'Pengguna Biasa',
+                'email' => 'biasa@example.com',
+                'password' => 'secure-password',
+            ])
+            ->call('create')
+            ->assertHasNoFormErrors();
+
+        $this->assertDatabaseHas(User::class, [
+            'email' => 'biasa@example.com',
+            'role' => 'user',
+        ]);
     }
 
     public function test_authenticated_user_with_another_email_domain_can_access_the_admin_panel(): void

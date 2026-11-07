@@ -13,6 +13,7 @@ class ActivityObserver
     private const TRACKED_ATTRIBUTES = [
         'name',
         'email',
+        'role',
         'nama',
         'alamat',
         'telepon',
