@@ -3,9 +3,9 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Filament\Models\Contracts\FilamentUser; 
-use Filament\Panel;
 use Database\Factories\UserFactory;
+use Filament\Models\Contracts\FilamentUser;
+use Filament\Panel;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -14,13 +14,14 @@ use Illuminate\Notifications\Notifiable;
 
 #[Fillable(['name', 'email', 'password'])]
 #[Hidden(['password', 'remember_token'])]
-class User extends Authenticatable
+class User extends Authenticatable implements FilamentUser
 {
-         public function canAccessPanel(Panel $panel): bool
-         { 
-            return str_ends_with($this->email, '@tokobajuserbaada.com');
-         }
-    
+    public function canAccessPanel(Panel $panel): bool
+    {
+        return in_array(config('app.env'), ['local', 'testing'], true) ||
+            str_ends_with($this->email, '@tokobajuserbaada.com');
+    }
+
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
 

@@ -24,7 +24,7 @@ class AdminPanelProvider extends PanelProvider
     public function panel(Panel $panel): Panel
     {
         return $panel
-            ->brandName('Toko Baju Serba Ada')
+            ->brandName('KEQO')
             ->id('admin')
             ->path('admin')
             ->login()

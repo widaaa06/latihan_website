@@ -4,6 +4,7 @@ namespace App\Filament\Resources\Branches\Schemas;
 
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
+use Filament\Schemas\Components\View;
 use Filament\Schemas\Schema;
 
 class BranchForm
@@ -15,14 +16,22 @@ class BranchForm
                 TextInput::make('nama')->required(),
                 Textarea::make('alamat')->required()->columnSpanFull(),
                 TextInput::make('telepon')->tel(),
+                View::make('filament.forms.components.branch-location-picker')
+                    ->columnSpanFull(),
                 TextInput::make('latitude')
-                     ->required()->numeric()    
-                     ->minValue(-90)->maxValue(90)    
-                     ->helperText('Contoh: -6.1754'),
-                TextInput::make('longitude')    
-                    ->required()->numeric()    
-                    ->minValue(-180)->maxValue(180)    
-                    ->helperText('Contoh: 106.8272'),
+                    ->required()
+                    ->numeric()
+                    ->minValue(-90)
+                    ->maxValue(90)
+                    ->readOnly()
+                    ->helperText('Pilih lokasi dengan mengeklik peta.'),
+                TextInput::make('longitude')
+                    ->required()
+                    ->numeric()
+                    ->minValue(-180)
+                    ->maxValue(180)
+                    ->readOnly()
+                    ->helperText('Nilai koordinat diisi otomatis dari peta.'),
             ]);
     }
 }
