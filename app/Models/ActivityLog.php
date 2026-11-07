@@ -1,0 +1,58 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Support\Facades\Auth;
+
+class ActivityLog extends Model
+{
+    protected $fillable = [
+        'user_id',
+        'event',
+        'description',
+        'subject_type',
+        'subject_id',
+        'properties',
+        'ip_address',
+        'user_agent',
+    ];
+
+    protected function casts(): array
+    {
+        return [
+            'properties' => 'array',
+        ];
+    }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function subject(): MorphTo
+    {
+        return $this->morphTo();
+    }
+
+    public static function record(
+        string $event,
+        string $description,
+        ?Model $subject = null,
+        array $properties = [],
+        int|string|null $actorId = null,
+    ): static {
+        return static::query()->create([
+            'user_id' => $actorId ?? Auth::id(),
+            'event' => $event,
+            'description' => $description,
+            'subject_type' => $subject?->getMorphClass(),
+            'subject_id' => $subject?->getKey(),
+            'properties' => $properties === [] ? null : $properties,
+            'ip_address' => request()->ip(),
+            'user_agent' => request()->userAgent(),
+        ]);
+    }
+}
